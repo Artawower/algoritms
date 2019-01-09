@@ -10,6 +10,7 @@ func calcCommonDivisor(v1, v2 int) int {
 	}
 
 	for {
+		fmt.Println(v1, "/", v2)
 		div = v1 % v2
 		if div == 0 {
 			return v2
@@ -25,7 +26,10 @@ func calcMinCommonMult(v1, v2 int) int {
 }
 
 func main() {
+	// тут считаем НОД
 	d := calcCommonDivisor(30, 12)
+	fmt.Println("НОД: ", d)
+	// тут Считаем НОК
 	m := calcMinCommonMult(30, 12)
-	fmt.Println(d, m)
+	fmt.Println("НОK: ", m)
 }
