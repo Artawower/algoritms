@@ -21,19 +21,10 @@
   <div id="mynetwork"></div>
 
   <script>
-    const g = [
-        [0, 2, 8, 0, 0, 0],
-        [2, 0, 0, 6, 0, 0],
-        [8, 0, 0, 12, 0, 0],
-        [0, 6, 12, 0, 1, 0],
-        [0, 0, 0, 1, 0, 22],
-        [0, 0, 0, 0, 22, 0],
-      ]
-
-      function paintGraph(g) {
+      function paintGraph(g, groups=[]) {
         var len = undefined;
         const nodes = [];
-        g.forEach((_, i) => nodes.push({id: i, label: `${i}`, group: 0, shape: 'circle'}));
+        g.forEach((_, i) => nodes.push({id: i, label: `${i}`, group: groups[i] ? groups[i] : 0, shape: 'circle'}));
         const visited = new Array(g.length).fill(0);
         const edges = [];
         for (const i in g) {
@@ -71,7 +62,54 @@
         };
         network = new vis.Network(container, data, options);
       }
+      const g = [
+        [0, 2, 8, 0, 0, 0],
+        [2, 0, 0, 6, 0, 0],
+        [8, 0, 0, 12, 0, 0],
+        [0, 6, 12, 0, 1, 0],
+        [0, 0, 0, 1, 0, 22],
+        [0, 0, 0, 0, 22, 0],
+      ]
+
+ /*     function findShortestPath(g, startPoint, endPoint) {
+        const weightMap = buildWeightMap(g, startPoint)
+      } */
+
+      function buildWeightMap(g, startPoint) {
+        const visitedNode = new Array(g.length).fill(0);
+        const weightsMap = new Array(g.length).fill(Infinity);
+        weightsMap[startPoint] = 0; // Весь до начального пути 0, ну что вы в самом деле..мы же на месте стоим!
+        let currentNode = startPoint;
+
+        let tmpTrash = 0;
+        let counterForward = +1;
+        while (visitedNode.indexOf(0) > -1) {
+
+          tmpTrash++;
+          if (tmpTrash > 15) break;
+          for (let j in g[currentNode]) {
+            if (visitedNode[j] || g[currentNode][j] + weightsMap[currentNode] > weightsMap[j] || currentNode === j || g[currentNode][j] === 0) {
+              // Короче, если мы уже посещали соседнюю вершину то нефиг снова туда лезть
+              // Если сумма весов текущего перехода больше чем сумма весов предыдущего то тоже нефиг лезть
+              // Если переход сам в себя то..тоже нефиг лезть.
+              continue;
+            }
+            weightsMap[j] = g[currentNode][j] + weightsMap[currentNode]
+          }
+          console.log("TCL: buildWeightMap -> weightsMap", weightsMap)
+          visitedNode[currentNode] = 1;
+          currentNode += counterForward;
+          if (currentNode >= g.length) {
+            currentNode = startPoint;
+            counterForward = -1;
+          }
+        }
+        return weightsMap;
+      }
+
       paintGraph(g);
+      const weightsMap = buildWeightMap(g, 2)
+			//console.log("TCL: weightMap", weightsMap)
   </script>
 </body>
 </html>
