@@ -1,0 +1,77 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <meta charset="utf-8">
+  <meta http-equiv="X-UA-Compatible" content="IE=edge">
+  <title>Page Title</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <link rel="stylesheet" type="text/css" media="screen" href="main.css">
+  <link rel="stylesheet" type="text/css" href="https://cdnjs.cloudflare.com/ajax/libs/vis/4.21.0/vis.min.css">
+  <style type="text/css">
+    #mynetwork {
+      width: 100%;
+      height: 100vh;
+      border: 1px solid lightgray;
+    }
+  </style>
+  <script src="main.js"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/vis/4.21.0/vis.min.js"></script>
+</head>
+<body>
+  <div id="mynetwork"></div>
+
+  <script>
+    const g = [
+        [0, 2, 8, 0, 0, 0],
+        [2, 0, 0, 6, 0, 0],
+        [8, 0, 0, 12, 0, 0],
+        [0, 6, 12, 0, 1, 0],
+        [0, 0, 0, 1, 0, 22],
+        [0, 0, 0, 0, 22, 0],
+      ]
+
+      function paintGraph(g) {
+        var len = undefined;
+        const nodes = [];
+        g.forEach((_, i) => nodes.push({id: i, label: `${i}`, group: 0, shape: 'circle'}));
+        const visited = new Array(g.length).fill(0);
+        const edges = [];
+        for (const i in g) {
+          for (const j in g[i]) {
+            if (g[i][j] !== 0 && i !== j) {
+              if (!visited[j]) {
+                edges.push({ from: i, to: j, label: `${g[i][j]}`});
+              }
+            }
+          }
+          visited[i] = 1;
+        }
+        // create a network
+        var container = document.getElementById('mynetwork');
+        var data = {
+          nodes: nodes,
+          edges: edges
+        };
+        var options = {
+          physics: false,
+          nodes: {
+            shape: 'dot',
+            size: 30,
+            font: {
+              size: 32
+            },
+            borderWidth: 2,
+            shadow: true,
+            
+          },
+          edges: {
+            width: 2,
+            shadow: true
+          }
+        };
+        network = new vis.Network(container, data, options);
+      }
+      paintGraph(g);
+  </script>
+</body>
+</html>
